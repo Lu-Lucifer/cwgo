@@ -19,6 +19,7 @@
 package config_generator
 
 import (
+	"context"
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
@@ -118,16 +119,16 @@ func (p *Config) IsSetAddr() bool {
 }
 
 func (p *Config) Read(iprot thrift.TProtocol) (err error) {
-
+	ctx := context.Background()
 	var fieldTypeId thrift.TType
 	var fieldId int16
 
-	if _, err = iprot.ReadStructBegin(); err != nil {
+	if _, err = iprot.ReadStructBegin(ctx); err != nil {
 		goto ReadStructBeginError
 	}
 
 	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin(ctx)
 		if err != nil {
 			goto ReadFieldBeginError
 		}
@@ -141,7 +142,7 @@ func (p *Config) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 2:
@@ -149,7 +150,7 @@ func (p *Config) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 3:
@@ -157,19 +158,19 @@ func (p *Config) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
+			if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		}
-		if err = iprot.ReadFieldEnd(); err != nil {
+		if err = iprot.ReadFieldEnd(ctx); err != nil {
 			goto ReadFieldEndError
 		}
 	}
-	if err = iprot.ReadStructEnd(); err != nil {
+	if err = iprot.ReadStructEnd(ctx); err != nil {
 		goto ReadStructEndError
 	}
 
@@ -192,7 +193,8 @@ ReadStructEndError:
 func (p *Config) ReadField1(iprot thrift.TProtocol) error {
 
 	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadString(ctx); err != nil {
 		return err
 	} else {
 		_field = v
@@ -201,7 +203,8 @@ func (p *Config) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 func (p *Config) ReadField2(iprot thrift.TProtocol) error {
-	_, size, err := iprot.ReadListBegin()
+	ctx := context.Background()
+	_, size, err := iprot.ReadListBegin(ctx)
 	if err != nil {
 		return err
 	}
@@ -217,7 +220,7 @@ func (p *Config) ReadField2(iprot thrift.TProtocol) error {
 
 		_field = append(_field, _elem)
 	}
-	if err := iprot.ReadListEnd(); err != nil {
+	if err := iprot.ReadListEnd(ctx); err != nil {
 		return err
 	}
 	p.SubConfigList = _field
@@ -226,7 +229,8 @@ func (p *Config) ReadField2(iprot thrift.TProtocol) error {
 func (p *Config) ReadField3(iprot thrift.TProtocol) error {
 
 	var _field *string
-	if v, err := iprot.ReadString(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadString(ctx); err != nil {
 		return err
 	} else {
 		_field = &v
@@ -237,7 +241,8 @@ func (p *Config) ReadField3(iprot thrift.TProtocol) error {
 
 func (p *Config) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("Config"); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteStructBegin(ctx, "Config"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -254,10 +259,10 @@ func (p *Config) Write(oprot thrift.TProtocol) (err error) {
 			goto WriteFieldError
 		}
 	}
-	if err = oprot.WriteFieldStop(); err != nil {
+	if err = oprot.WriteFieldStop(ctx); err != nil {
 		goto WriteFieldStopError
 	}
-	if err = oprot.WriteStructEnd(); err != nil {
+	if err = oprot.WriteStructEnd(ctx); err != nil {
 		goto WriteStructEndError
 	}
 	return nil
@@ -272,13 +277,14 @@ WriteStructEndError:
 }
 
 func (p *Config) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("ServiceName", thrift.STRING, 1); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "ServiceName", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.ServiceName); err != nil {
+	if err := oprot.WriteString(ctx, p.ServiceName); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -289,10 +295,11 @@ WriteFieldEndError:
 }
 
 func (p *Config) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("SubConfigList", thrift.LIST, 2); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "SubConfigList", thrift.LIST, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.SubConfigList)); err != nil {
+	if err := oprot.WriteListBegin(ctx, thrift.STRUCT, len(p.SubConfigList)); err != nil {
 		return err
 	}
 	for _, v := range p.SubConfigList {
@@ -300,10 +307,10 @@ func (p *Config) writeField2(oprot thrift.TProtocol) (err error) {
 			return err
 		}
 	}
-	if err := oprot.WriteListEnd(); err != nil {
+	if err := oprot.WriteListEnd(ctx); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -314,14 +321,15 @@ WriteFieldEndError:
 }
 
 func (p *Config) writeField3(oprot thrift.TProtocol) (err error) {
+	ctx := context.Background()
 	if p.IsSetAddr() {
-		if err = oprot.WriteFieldBegin("addr", thrift.STRING, 3); err != nil {
+		if err = oprot.WriteFieldBegin(ctx, "addr", thrift.STRING, 3); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := oprot.WriteString(*p.Addr); err != nil {
+		if err := oprot.WriteString(ctx, *p.Addr); err != nil {
 			return err
 		}
-		if err = oprot.WriteFieldEnd(); err != nil {
+		if err = oprot.WriteFieldEnd(ctx); err != nil {
 			goto WriteFieldEndError
 		}
 	}
@@ -369,13 +377,13 @@ func (p *SubConfig) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
+	ctx := context.Background()
+	if _, err = iprot.ReadStructBegin(ctx); err != nil {
 		goto ReadStructBeginError
 	}
 
 	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin(ctx)
 		if err != nil {
 			goto ReadFieldBeginError
 		}
@@ -389,7 +397,7 @@ func (p *SubConfig) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 2:
@@ -397,19 +405,19 @@ func (p *SubConfig) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
+			if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		}
-		if err = iprot.ReadFieldEnd(); err != nil {
+		if err = iprot.ReadFieldEnd(ctx); err != nil {
 			goto ReadFieldEndError
 		}
 	}
-	if err = iprot.ReadStructEnd(); err != nil {
+	if err = iprot.ReadStructEnd(ctx); err != nil {
 		goto ReadStructEndError
 	}
 
@@ -432,7 +440,8 @@ ReadStructEndError:
 func (p *SubConfig) ReadField1(iprot thrift.TProtocol) error {
 
 	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadString(ctx); err != nil {
 		return err
 	} else {
 		_field = v
@@ -441,7 +450,8 @@ func (p *SubConfig) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 func (p *SubConfig) ReadField2(iprot thrift.TProtocol) error {
-	_, size, err := iprot.ReadListBegin()
+	ctx := context.Background()
+	_, size, err := iprot.ReadListBegin(ctx)
 	if err != nil {
 		return err
 	}
@@ -457,7 +467,7 @@ func (p *SubConfig) ReadField2(iprot thrift.TProtocol) error {
 
 		_field = append(_field, _elem)
 	}
-	if err := iprot.ReadListEnd(); err != nil {
+	if err := iprot.ReadListEnd(ctx); err != nil {
 		return err
 	}
 	p.ConfigKvPairList = _field
@@ -466,7 +476,8 @@ func (p *SubConfig) ReadField2(iprot thrift.TProtocol) error {
 
 func (p *SubConfig) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("SubConfig"); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteStructBegin(ctx, "SubConfig"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -479,10 +490,10 @@ func (p *SubConfig) Write(oprot thrift.TProtocol) (err error) {
 			goto WriteFieldError
 		}
 	}
-	if err = oprot.WriteFieldStop(); err != nil {
+	if err = oprot.WriteFieldStop(ctx); err != nil {
 		goto WriteFieldStopError
 	}
-	if err = oprot.WriteStructEnd(); err != nil {
+	if err = oprot.WriteStructEnd(ctx); err != nil {
 		goto WriteStructEndError
 	}
 	return nil
@@ -497,13 +508,14 @@ WriteStructEndError:
 }
 
 func (p *SubConfig) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("NameSpace", thrift.STRING, 1); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "NameSpace", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.NameSpace); err != nil {
+	if err := oprot.WriteString(ctx, p.NameSpace); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -514,10 +526,11 @@ WriteFieldEndError:
 }
 
 func (p *SubConfig) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("ConfigKvPairList", thrift.LIST, 2); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "ConfigKvPairList", thrift.LIST, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.ConfigKvPairList)); err != nil {
+	if err := oprot.WriteListBegin(ctx, thrift.STRUCT, len(p.ConfigKvPairList)); err != nil {
 		return err
 	}
 	for _, v := range p.ConfigKvPairList {
@@ -525,10 +538,10 @@ func (p *SubConfig) writeField2(oprot thrift.TProtocol) (err error) {
 			return err
 		}
 	}
-	if err := oprot.WriteListEnd(); err != nil {
+	if err := oprot.WriteListEnd(ctx); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -593,13 +606,13 @@ func (p *ConfigKvPair) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
+	ctx := context.Background()
+	if _, err = iprot.ReadStructBegin(ctx); err != nil {
 		goto ReadStructBeginError
 	}
 
 	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin(ctx)
 		if err != nil {
 			goto ReadFieldBeginError
 		}
@@ -613,7 +626,7 @@ func (p *ConfigKvPair) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 2:
@@ -621,7 +634,7 @@ func (p *ConfigKvPair) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 3:
@@ -629,7 +642,7 @@ func (p *ConfigKvPair) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 4:
@@ -637,7 +650,7 @@ func (p *ConfigKvPair) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 5:
@@ -645,19 +658,19 @@ func (p *ConfigKvPair) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
+			} else if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
+			if err = iprot.Skip(ctx, fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		}
-		if err = iprot.ReadFieldEnd(); err != nil {
+		if err = iprot.ReadFieldEnd(ctx); err != nil {
 			goto ReadFieldEndError
 		}
 	}
-	if err = iprot.ReadStructEnd(); err != nil {
+	if err = iprot.ReadStructEnd(ctx); err != nil {
 		goto ReadStructEndError
 	}
 
@@ -680,7 +693,8 @@ ReadStructEndError:
 func (p *ConfigKvPair) ReadField1(iprot thrift.TProtocol) error {
 
 	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadString(ctx); err != nil {
 		return err
 	} else {
 		_field = v
@@ -691,7 +705,8 @@ func (p *ConfigKvPair) ReadField1(iprot thrift.TProtocol) error {
 func (p *ConfigKvPair) ReadField2(iprot thrift.TProtocol) error {
 
 	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadString(ctx); err != nil {
 		return err
 	} else {
 		_field = v
@@ -702,7 +717,8 @@ func (p *ConfigKvPair) ReadField2(iprot thrift.TProtocol) error {
 func (p *ConfigKvPair) ReadField3(iprot thrift.TProtocol) error {
 
 	var _field ConfigValueType
-	if v, err := iprot.ReadI32(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadI32(ctx); err != nil {
 		return err
 	} else {
 		_field = ConfigValueType(v)
@@ -713,7 +729,8 @@ func (p *ConfigKvPair) ReadField3(iprot thrift.TProtocol) error {
 func (p *ConfigKvPair) ReadField4(iprot thrift.TProtocol) error {
 
 	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadString(ctx); err != nil {
 		return err
 	} else {
 		_field = v
@@ -724,7 +741,8 @@ func (p *ConfigKvPair) ReadField4(iprot thrift.TProtocol) error {
 func (p *ConfigKvPair) ReadField5(iprot thrift.TProtocol) error {
 
 	var _field string
-	if v, err := iprot.ReadString(); err != nil {
+	ctx := context.Background()
+	if v, err := iprot.ReadString(ctx); err != nil {
 		return err
 	} else {
 		_field = v
@@ -735,7 +753,8 @@ func (p *ConfigKvPair) ReadField5(iprot thrift.TProtocol) error {
 
 func (p *ConfigKvPair) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("ConfigKvPair"); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteStructBegin(ctx, "ConfigKvPair"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -760,10 +779,10 @@ func (p *ConfigKvPair) Write(oprot thrift.TProtocol) (err error) {
 			goto WriteFieldError
 		}
 	}
-	if err = oprot.WriteFieldStop(); err != nil {
+	if err = oprot.WriteFieldStop(ctx); err != nil {
 		goto WriteFieldStopError
 	}
-	if err = oprot.WriteStructEnd(); err != nil {
+	if err = oprot.WriteStructEnd(ctx); err != nil {
 		goto WriteStructEndError
 	}
 	return nil
@@ -778,13 +797,14 @@ WriteStructEndError:
 }
 
 func (p *ConfigKvPair) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("Key", thrift.STRING, 1); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "Key", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Key); err != nil {
+	if err := oprot.WriteString(ctx, p.Key); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -795,13 +815,14 @@ WriteFieldEndError:
 }
 
 func (p *ConfigKvPair) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("Value", thrift.STRING, 2); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "Value", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Value); err != nil {
+	if err := oprot.WriteString(ctx, p.Value); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -812,13 +833,14 @@ WriteFieldEndError:
 }
 
 func (p *ConfigKvPair) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("ValueType", thrift.I32, 3); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "ValueType", thrift.I32, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(int32(p.ValueType)); err != nil {
+	if err := oprot.WriteI32(ctx, int32(p.ValueType)); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -829,13 +851,14 @@ WriteFieldEndError:
 }
 
 func (p *ConfigKvPair) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("Desc", thrift.STRING, 4); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "Desc", thrift.STRING, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Desc); err != nil {
+	if err := oprot.WriteString(ctx, p.Desc); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
@@ -846,13 +869,14 @@ WriteFieldEndError:
 }
 
 func (p *ConfigKvPair) writeField5(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("kind", thrift.STRING, 5); err != nil {
+	ctx := context.Background()
+	if err = oprot.WriteFieldBegin(ctx, "kind", thrift.STRING, 5); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Kind); err != nil {
+	if err := oprot.WriteString(ctx, p.Kind); err != nil {
 		return err
 	}
-	if err = oprot.WriteFieldEnd(); err != nil {
+	if err = oprot.WriteFieldEnd(ctx); err != nil {
 		goto WriteFieldEndError
 	}
 	return nil
